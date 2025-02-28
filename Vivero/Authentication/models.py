@@ -15,7 +15,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, verbose_name="Last Name")
     username = models.CharField(max_length=50, unique=True, verbose_name="Username")
     email = models.EmailField(unique=True, verbose_name="Email")
-    role_id = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='Rol')
+    role_id = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='Rol', null=True, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name', 'last_name']
