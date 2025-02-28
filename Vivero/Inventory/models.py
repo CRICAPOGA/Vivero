@@ -16,3 +16,6 @@ class Plant(models.Model):
     care = models.CharField(max_length=1000, verbose_name="Care")
     price = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Price")
     stock = models.IntegerField(validators=[MinValueValidator(0)], verbose_name="Stock")
+
+    def __str__(self):
+        return self.plant_name
