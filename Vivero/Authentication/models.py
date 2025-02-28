@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class Role(models.Model):
     role_id = models.AutoField(primary_key=True, verbose_name="Id")
-    role = models.CharField(max_lenght=30, verbose_name="Role")
+    role = models.CharField(max_length=30, verbose_name="Role")
 
     def __str__(self):
         return self.role
