@@ -21,3 +21,8 @@ def login_auth(request):
             messages.error(request,'Credenciales incorrectas')
             return render(request, 'login.html')
     return render(request, 'login.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return render(request, 'login.html')
