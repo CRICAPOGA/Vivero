@@ -1,6 +1,6 @@
 from django.db import models
 from Authentication.models import User
-from Inventory.models import Plant
+from Inventory.models import Plant # Importar el modelo desde Inventory
 
 # Create your models here.
 class Sale(models.Model):
