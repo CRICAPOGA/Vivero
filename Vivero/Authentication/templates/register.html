@@ -9,6 +9,11 @@
 
 <body>
     <h1>Register</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <h2>{{ message }}</h2>
+    {% endfor %}
+    {% endif %}
     <form method="POST">
         {% csrf_token %}
 
@@ -30,15 +35,6 @@
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <br>
-
-        <label for="role_id">Role:</label>
-        <select id="role_id" name="role_id">
-            <option value="">Select a role</option>
-            {% for role in roles %}
-            <option value="{{ role.id }}">{{ role.name }}</option>
-            {% endfor %}
-        </select>
         <br>
 
         <button type="submit">Register</button>

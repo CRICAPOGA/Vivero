@@ -37,7 +37,11 @@ def register_view(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
-        role_id = request.POST.get('role_id')
+        role_id = 1
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'El nombre de usuario ya está en uso.')
+            return redirect('register')
 
         user = User.objects.create_user(
             username=username,
@@ -46,7 +50,7 @@ def register_view(request):
         )
         user.name = name
         user.last_name = last_name
-        user.role_id = Role.objects.get(id=role_id) if role_id else None
+        user.role_id = Role.objects.get(role_id=role_id) if role_id else None
         user.save()
         
         messages.success(request, 'Usuario registrado exitosamente')
