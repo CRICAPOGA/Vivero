@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Authentication',
     'Inventory',
     'Sales'
+
 ]
 
 MIDDLEWARE = [

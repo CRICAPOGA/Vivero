@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Planta{% endblock %}
+
+{% block content %}
+    <h1>Editar Planta</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="plant_name">Nombre:</label>
+        <input type="text" id="plant_name" name="name" value="{{ plant.name }}">
+
+        <label for="care">Cuidados:</label>
+        <input type="file" id="care" name="care">{{ planta.description }}</textarea>
+
+        <label for="price">Precio:</label>
+        <input type="file" id="price" name="price">
+
+        <label for="category_id">Categoría:</label>
+        <select id="category_id" name="category">
+            {% for categoria in categorias %}
+                <option value="{{ categoria.id }}" {% if categoria.id == planta.category.id %}selected{% endif %}>{{ categoria.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
+{% endblock %}

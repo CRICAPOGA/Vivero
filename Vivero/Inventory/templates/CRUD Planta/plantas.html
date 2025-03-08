@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}CATALOGO{% endblock %}
+
+{% block content %}
+    <h1>CATALOGO DE PLANTAS</h1>
+    <!-- {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %} -->
+    <div>
+        <h2>Categorías</h2>
+        <ul>
+            {% for categoria in categorias %}
+                <li><a href="{% url 'plantasPorCategoria' category.id %}">{{ categoria.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!---->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cuidados</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plant in plants %}
+                <tr>
+                    <td>{{ plant.plant_name }}</td>
+                    <td>{{ plant.care }}</td>
+                    <td>{{ plant.price }}</td>
+                    <!--<td><img src="{{ producto.image.url }}" alt="{{ plant.name }}" width="100"></td>-->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
