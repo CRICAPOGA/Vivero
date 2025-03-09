@@ -21,18 +21,20 @@
         </thead>
         <tbody>
             {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.user_id }}</td>
-                    <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.email }}</td>
-                    <td>{{ usuario.name }}</td>
-                    <td>{{ usuario.last_name }}</td>
-                    <td>{{ usuario.role_id.role }}</td>
-                    <td>
-                        <a href="{% url 'editar_usuario' usuario.user_id %}">Editar</a>
-                        <a href="{% url 'eliminar_usuario' usuario.user_id %}" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
-                    </td>
-                </tr>
+                {% if usuario.role_id.role_id != 3 %}
+                    <tr>
+                        <td>{{ usuario.user_id }}</td>
+                        <td>{{ usuario.username }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>{{ usuario.name }}</td>
+                        <td>{{ usuario.last_name }}</td>
+                        <td>{{ usuario.role_id.role }}</td>
+                        <td>
+                            <a href="{% url 'editar_usuario' usuario.user_id %}">Editar</a>
+                            <a href="{% url 'eliminar_usuario' usuario.user_id %}" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
