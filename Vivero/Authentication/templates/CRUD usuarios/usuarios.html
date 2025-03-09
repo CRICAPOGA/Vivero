@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <h2>Lista de Usuarios</h2>
+    <a href="{% url 'crear_usuario' %}">Crear Usuario</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.user_id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                    <td>{{ usuario.role_id.role }}</td>
+                    <td>
+                        <a href="{% url 'editar_usuario' usuario.user_id %}">Editar</a>
+                        <a href="{% url 'eliminar_usuario' usuario.user_id %}" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
