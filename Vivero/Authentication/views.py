@@ -109,7 +109,7 @@ def editar_usuario(request, usuario_id):
         messages.success(request, "Usuario actualizado correctamente.")
         return redirect("lista_usuarios")
     
-    return render(request, "CRUD usuarios/editar_usuario.html", {"usuario": usuario})
+    return render(request, "CRUD usuarios/editar_usuario.html", {"usuario": usuario, "roles": roles})
 
 @login_required
 def eliminar_usuario(request, usuario_id):
