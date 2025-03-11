@@ -19,4 +19,14 @@ class Plant(models.Model):
 
     def __str__(self):
         return self.plant_name
-    
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=100)
+    stock = models.IntegerField(default=0)
+    stock_minimo = models.IntegerField(default=20)
+
+    def en_stock_bajo(self):
+        return self.stock <= self.stock_minimo
+
+    def __str__(self):
+        return f"{self.nombre} - Stock: {self.stock}"

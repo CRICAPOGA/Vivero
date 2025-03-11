@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views import Vista_subir_excel
+from .views import dashboard
 
 urlpatterns = [
     path('plantas/', views.plantas, name='plantas'),
@@ -15,4 +16,6 @@ urlpatterns = [
     path('catalogoPlantas/categoria/<int:categoria_id>/', views.catalogoCategoria, name='catalogoCategoria'),
 
     path('subir-excel/', Vista_subir_excel.as_view(), name='subir_excel'),
+
+    path('dashboard/', dashboard, name='dashboard'),
 ]

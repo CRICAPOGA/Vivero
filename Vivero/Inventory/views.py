@@ -6,6 +6,8 @@ from .models import Categorie, Plant
 from django.core.files.storage import default_storage
 from .models import Plant, Categorie
 from django.contrib import messages
+from .models import Producto
+from django.db import models
 # from django.contrib.auth.decorators import login_required
 
 class Vista_subir_excel(View):
@@ -146,3 +148,12 @@ def catalogoBuscar(request):
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'query': query})
+
+#### STOCK BAJO ####
+def verificar_stock_bajo():
+    productos_alerta = Producto.objects.filter(stock__lte=models.F('stock_minimo'))
+    return productos_alerta
+
+def dashboard(request):
+    productos_alerta = verificar_stock_bajo()
+    return render(request, 'dashboard.html', {'productos_alerta': productos_alerta})
