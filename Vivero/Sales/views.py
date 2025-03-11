@@ -63,9 +63,61 @@ def clean_cart(request):
 
 ############## PEDIDO ###############
 
+@login_required(login_url="authentication/login")
+def process_order(request):
+    pedido = Sale.objects.create(user_id=request.user)
+    carro = Cart(request)
+    detalle_pedido = list()
+    for key, value in carro.cart.items():
+        detalle_pedido.append(Sales_Detail(
+            plant_id = Plant.objects.get(id=key),
+            amount = value["amount"],
+            user = request.User,
+            sale_id=pedido
+        ))
+    Sales_Detail.objects.bulk_create(detalle_pedido)
+
+    messages.success(request, "El pedido se ha creado correctamente")
+
+    return redirect("catalogoPlantas")
+"""""
+def process_order(request):
+    # Crear el pedido (venta)
+    pedido = Sale.objects.create(user_id=request.user, total_price=0)  # Inicializar total_price en 0
+
+    # Obtener el carrito
+    carro = Cart(request)
+    detalle_pedido = list()
+    total_price = 0
+
+    for key, value in carro.cart.items():
+        plant = Plant.objects.get(id=key)  # Obtener la planta desde la BD
+        subtotal = plant.price * value["amount"]  # Calcular subtotal
+
+        detalle_pedido.append(Sales_Detail(
+            sale_id=pedido,  
+            plant_id=plant,  
+            amount=value["amount"],  
+            price=plant.price  # Guardar el precio unitario
+        ))
+
+        total_price += subtotal  # Acumular total
+
+    # Guardar todos los detalles del pedido en la BD
+    Sales_Detail.objects.bulk_create(detalle_pedido)
+
+    # Actualizar el total del pedido con la suma de los productos
+    pedido.total_price = total_price
+    pedido.save()
+
+    messages.success(request, "El pedido se ha creado correctamente")
+
+    return redirect("catalogoPlantas")
+"""
+
 # Restringir la vista solo para administradores
 #@staff_member_required
 def order_list(request):
-    user_id = request.user.id if request.user.is_authenticated else None
+    #user_id = request.user.id if request.user.is_authenticated else None
     orders = Sale.objects.all().order_by('-date')  # Obtener todos los pedidos ordenados por fecha descendente
     return render(request, 'order_list.html', {'orders':orders})

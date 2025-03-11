@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +13,58 @@
             background-color: rgba(82, 66, 9, 0.1);
             background-blend-mode: darken;
         }
+        
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            left: -250px;
+            top: 0;
+            background: rgb(107, 142, 35);
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar.menu-toggle {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .menu {
+            cursor: pointer;
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #main {
+            margin-left: 0;
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar.menu-toggle~#main {
+            margin-left: 250px;
+        }
     </style>
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <title>{% block title %}{% endblock %}</title>
-
     {% block style %}{% endblock %}
 </head>
 
@@ -26,70 +72,97 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(107, 142, 35); padding: 10px;">
         <div class="container-fluid">
-            <!-- Logo y Nombre -->
+            {% if user.role_id.role_id != 3 %}
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'img/Logo.png' %}" class="img-fluid me-2" style="height: 60px;" alt="Logo">
+                {% endif %}
                 <span class="fw-bold text-white">Verde Vida</span>
             </a>
+            
 
-            <!-- Botón del menú en dispositivos móviles -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Elementos del navbar -->
+            {% if user.role_id.role_id != 3 %}
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <!-- Home -->
                     <li class="nav-item me-3">
                         <a class="nav-link text-white" href="{% url 'home' %}">
                             <ion-icon name="home-outline"></ion-icon> Home
                         </a>
                     </li>
-                    <!-- Catalogo -->
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-white" href="{% url 'catalogoPlantas' %}">
+                            <ion-icon name="bag-handle-outline"></ion-icon> Catalogo
+                        </a>
+                    </li>
+                    
+                    {% if user.is_authenticated and user.role_id.role_id == 1 %}
                     <li class="nav-item me-3">
                         <a class="nav-link text-white" href="{% url 'cart_view' %}">
                             <ion-icon name="cart-outline"></ion-icon> Carrito
                         </a>
                     </li>
-                    <!-- Inicio sesión -->
+                    {% endif %}
+                    {% endif %}
+
                     {% if user.is_authenticated %}
+                    <ul class="navbar-nav {% if user.role_id.role_id == 3 %}ms-auto{% endif %}">
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="{% url 'logout' %}">Cerrar Sesión</a>
+                            <a class="nav-link text-white" href="{% url 'logout' %}">
+                                <ion-icon name="log-out-outline"></ion-icon> Cerrar Sesión
+                            </a>
                         </li>
+                    </ul>
                     {% else %}
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="{% url 'register' %}">Registrarse</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'login' %}">Iniciar Sesión</a>
-                        </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-white" href="{% url 'register' %}">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'login' %}">Iniciar Sesión</a>
+                    </li>
                     {% endif %}
-                    <!-- Registro -->
-                    {% if user.role_id.role_id == 3 %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'lista_usuarios' %}">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'plantas' %}">Plantas</a>
-                        </li>
-                    {% endif %}
-                </ul>
+
+
             </div>
-        </div>
     </nav>
 
-    <main class="flex-grow-1">
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div class="container-fluid d-flex mt-0">
+        <!-- Sidebar (solo para rol 3) -->
+        {% if user.role_id.role_id == 3 %}
+        <div class="p-0 text-white mt-4" style="width: 250px; height: 80vh; background-color: rgb(107, 142, 35);">
+            <div class="text-center py-3">
+                <img src="{% static 'img/Logo.png' %}" class="img-fluid mt-1" style="height: 150px;" alt="Logo">
+                <p class="fw-bold mt-2">Hola, {{ user.name }}!</p>
+            </div>
+            <hr class="m-0">
+            <ul class="list-group mt-3">
+                <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
+                    <a href="{% url 'lista_usuarios' %}" class="btn w-100 text-white"
+                        style="background-color: rgb(85, 120, 25); border: none;">Usuarios</a>
+                </li>
+                <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
+                    <a href="{% url 'plantas' %}" class="btn w-100 text-white"
+                        style="background-color: rgb(85, 120, 25); border: none;">Plantas</a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
 
-    <!-- Bootstrap JS -->
+        <!-- Contenido Principal -->
+        <main class="flex-grow-1 p-4">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
 </body>
-<footer class="bg text-white text-center py-3" style="background-color: rgb(107, 142, 35);">
+<footer class="bg text-white text-center py-3" style="background-color: #8c674a;">
     <p>&copy; 2024 Vivero Verde Vida. Todos los derechos reservados.</p>
 </footer>
 </html>

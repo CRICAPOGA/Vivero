@@ -5,20 +5,10 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3">
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-120 px-3">
     <div class="card shadow-lg bg-white rounded-4 p-5 m-4 col-lg-5 col-md-8 col-sm-12" style="background-color:#f5f5dc;">
         <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Crear Usuario</h2>
         <hr class="border-1 opacity-75 mt-1">
-
-        <!-- Mensajes de éxito, error, advertencia -->
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
 
         <form method="post">
             {% csrf_token %}

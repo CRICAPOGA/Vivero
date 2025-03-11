@@ -8,5 +8,6 @@ urlpatterns = [
     path("cart/increment/<int:plant_id>/", views.increment_from_cart, name="increment_from_cart"),
     path("cart/decrement/<int:plant_id>/", views.decrement_from_cart, name="decrement_from_cart"),
     path("cart/clean/", views.clean_cart, name="clean_cart"),
+    path("orders/", views.process_order, name="process_order"),
     path("orders/", views.order_list, name="order_list"),
 ]
