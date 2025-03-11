@@ -30,6 +30,7 @@ def add_to_cart(request, plant_id):
     plant = get_object_or_404(Plant, pk=plant_id) # Busca la planta
     cart = Cart(request)
     cart.add(plant)
+    messages.success(request, 'Producto añadido al Carrito')
     return redirect("catalogoPlantas")
 
 # Incrementa la cantidad de una planta en el carrito de compras (Llama función)
