@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-<header class="bg-success text-white text-center py-5">
+<header class="bg-light bg-opacity-70 text-black text-center py-5">
     <div class="container">
         <h1>Bienvenidos a Vivero Verde Vida</h1>
         <p class="lead">Conectamos tu vida con la naturaleza</p>
     </div>
 </header>
-
-<section id="productos" class="container my-5">
-    <h2 class="text-center">🌿 ¿Qué encontrarás en nuestra tienda? 🌿</h2>
+<hr class="m-0">
+<section id="productos" class="bg-light bg-opacity-75 w-100 py-5">
+    <div class="container">
+        <h2 class="text-center">🌿 ¿Qué encontrarás en nuestra tienda? 🌿</h2>
     <div class="row text-center mt-4">
         <div class="col-md-4">
             <h4>🌵 Plantas y suculentas</h4>
@@ -20,13 +21,15 @@
             <h4>🪴 Macetas y accesorios</h4>
         </div>
     </div>
+    </div>
 </section>
+<hr class="m-0">
 
-<section id="contacto" class="bg-light py-5">
+<section id="contacto" class="bg-light bg-opacity-75 py-5">
     <div class="container text-center">
         <h2>📦 ¡Compra fácil y seguro!</h2>
         <p>Hacemos envíos a domicilio en Facatativá y sus alrededores.</p>
-        <a href="{% url 'catalogoPlantas' %}" class="btn btn-success">Ver Catálogo</a>
+        <a href="{% url 'catalogoPlantas' %}" class="btn" style="background-color: rgb(107, 142, 35); color: white;">Ver Catálogo</a>
     </div>
 </section>
 {% endblock %}

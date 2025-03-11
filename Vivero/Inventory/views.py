@@ -138,20 +138,17 @@ def buscarPlanta(request):
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories, 'query': query})
 
 #######CATALOGO PLANTAS##########
-@login_required
 def catalogoPlantas(request):
     plants = Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories})
 
-@login_required
 def catalogoCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id) 
     plants = Plant.objects.filter(category_id=categoria)
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'categoria': categoria})
 
-@login_required
 def catalogoBuscar(request):
     query = request.GET.get('buscarPlanta')
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
