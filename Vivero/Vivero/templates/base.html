@@ -42,8 +42,11 @@
                                 <a class="dropdown-item" href="{% url 'login' %}">Iniciar Sesión</a>
                                 <a class="dropdown-item" href="{% url 'register' %}">Registrarse</a>
                             {% endif %}
-                            <a class="dropdown-item" href="{% url 'lista_usuarios' %}">Usuarios</a>
-                            <a class="dropdown-item" href="{% url 'plantas' %}">Plantas</a>
+                            
+                            {% if user.role_id.role_id == 3 %}
+                                <a class="dropdown-item" href="{% url 'lista_usuarios' %}">Usuarios</a>
+                                <a class="dropdown-item" href="{% url 'plantas' %}">Plantas</a>
+                            {% endif %}
                         </div>
                     </li>
                 </ul>
