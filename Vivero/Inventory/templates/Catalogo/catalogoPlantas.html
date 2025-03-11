@@ -55,11 +55,6 @@
             {% for planta in plants %}
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card" style="background-color:#f5f5dc;">
-                    {% if planta.image %}
-                    <img src="{{ planta.image.url }}" class="card-img-top" alt="{{ planta.name }}">
-                    {% else %}
-                    <img src="{% static 'img/default-product.jpg' %}" class="card-img-top" alt="Imagen no disponible">
-                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ planta.name }}</h5>
                         <p class="card-text">
