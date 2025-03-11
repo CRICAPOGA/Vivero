@@ -84,6 +84,7 @@
                         <th class="text-center">Nombre</th>
                         <th class="text-center">Recomendaciones de cuidados</th>
                         <th class="text-center">Precio</th>
+                        <th class="text-center">Cantidad</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -94,6 +95,7 @@
                             <td class="align-middle">{{ planta.plant_name}}</td>
                             <td class="align-middle">{{ planta.care }}</td>
                             <td class="align-middle">${{ planta.price }}</td>
+                            <td class="align-middle">${{ planta.stock }}</td>
                             <td class="text-center align-middle">
                                 <a href="{% url 'editarPlanta' planta.plant_id %}" class="btn btn-sm fw-bold shadow-sm mb-3" style="background-color: #b58863; color: white;">Editar</a>
                                 <a href="{% url 'eliminarPlanta' planta.plant_id %}" class="btn btn-sm fw-bold shadow-sm" style="background-color: #b58863; color: white;">Eliminar</a>
