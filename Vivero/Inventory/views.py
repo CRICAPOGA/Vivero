@@ -146,4 +146,3 @@ def catalogoBuscar(request):
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'query': query})
->>>>>>> b8321274300c28dd4b4d800bc390cad0fda9181b
