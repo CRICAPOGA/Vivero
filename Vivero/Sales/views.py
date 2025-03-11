@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+
 from .models import Sale, Sales_Detail
 from Inventory.models import Plant
 from Authentication.models import User
 from datetime import datetime
 from Sales.cart import Cart
+from django.utils.timezone import now
 
 #Vistas que manejan las peticiones HTTP
 
@@ -23,7 +25,7 @@ def cart_view(request):
     return render(request, "cart.html", {"cart": cart.cart, "total": total})
 
 # Agrega una planta al carrito de compras (Llama función)
-@login_required
+@login_required(login_url='login') 
 def add_to_cart(request, plant_id):
     plant = get_object_or_404(Plant, pk=plant_id) # Busca la planta
     cart = Cart(request)
@@ -61,63 +63,52 @@ def clean_cart(request):
     cart.clean()
     return redirect("cart_view")
 
-############## PEDIDO ###############
+############## PEDIDO ##############
+@login_required
+def register_sale(request):
+    if request.method == "POST":
+        cart = Cart(request)  
+        if not cart.cart:
+            return JsonResponse({"success": False, "message": "El carrito está vacío."})
 
-@login_required(login_url="authentication/login")
-def process_order(request):
-    pedido = Sale.objects.create(user_id=request.user)
-    carro = Cart(request)
-    detalle_pedido = list()
-    for key, value in carro.cart.items():
-        detalle_pedido.append(Sales_Detail(
-            plant_id = Plant.objects.get(id=key),
-            amount = value["amount"],
-            user = request.User,
-            sale_id=pedido
-        ))
-    Sales_Detail.objects.bulk_create(detalle_pedido)
+        user = request.user  
+        total_price = cart.get_total()  
 
-    messages.success(request, "El pedido se ha creado correctamente")
+        sale = Sale.objects.create(user_id=user, total_price=total_price, date=now())
 
-    return redirect("catalogoPlantas")
-"""""
-def process_order(request):
-    # Crear el pedido (venta)
-    pedido = Sale.objects.create(user_id=request.user, total_price=0)  # Inicializar total_price en 0
+        for item in cart.cart.values():
+            plant = Plant.objects.get(pk=item["plant_id"])
 
-    # Obtener el carrito
-    carro = Cart(request)
-    detalle_pedido = list()
-    total_price = 0
+            if plant.stock < item["quantity"]:
+                return JsonResponse({"success": False, "message": f"No hay suficiente stock de {plant.plant_name}."})
 
-    for key, value in carro.cart.items():
-        plant = Plant.objects.get(id=key)  # Obtener la planta desde la BD
-        subtotal = plant.price * value["amount"]  # Calcular subtotal
+            Sales_Detail.objects.create(
+                sale_id=sale,
+                plant_id=plant,
+                amount=item["quantity"],
+                price=item["price"]
+            )
 
-        detalle_pedido.append(Sales_Detail(
-            sale_id=pedido,  
-            plant_id=plant,  
-            amount=value["amount"],  
-            price=plant.price  # Guardar el precio unitario
-        ))
+            plant.stock -= item["quantity"]
+            plant.save()
 
-        total_price += subtotal  # Acumular total
+        cart.clean()  
+        # Enviar notificación al administrador
+        admin_user = User.objects.filter(is_superuser=True).first()
+        if admin_user:
+            messages.success(request, f"Nuevo pedido realizado por {user.username}. Total: ${total_price}")
+            
+        return JsonResponse({"success": True, "message": "¡Pedido realizado exitosamente!"})
+    return JsonResponse({"success": False, "message": "Método no permitido."})
 
-    # Guardar todos los detalles del pedido en la BD
-    Sales_Detail.objects.bulk_create(detalle_pedido)
+@login_required
+def sales_history(request):
+    sales = Sale.objects.all().order_by("-date")  # Obtener todas las ventas ordenadas por fecha descendente
+    sales_details = Sales_Detail.objects.filter(sale_id__in=sales)  # Obtener los detalles de esas ventas
 
-    # Actualizar el total del pedido con la suma de los productos
-    pedido.total_price = total_price
-    pedido.save()
-
-    messages.success(request, "El pedido se ha creado correctamente")
-
-    return redirect("catalogoPlantas")
-"""
-
-# Restringir la vista solo para administradores
-#@staff_member_required
-def order_list(request):
-    #user_id = request.user.id if request.user.is_authenticated else None
-    orders = Sale.objects.all().order_by('-date')  # Obtener todos los pedidos ordenados por fecha descendente
-    return render(request, 'order_list.html', {'orders':orders})
+    context = {
+        "sales": sales,
+        "sales_details": sales_details,
+    }
+    
+    return render(request, "sales_history.html", context)

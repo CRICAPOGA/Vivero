@@ -66,8 +66,7 @@
                         <p class="card-text">
                             <span class="fw-bold" style="color: #b58863;">Recomendaciones de cuidados:</span> {{ planta.care }}
                         </p>
-                        <button class="btn" style="background-color: rgb(255,179,71);" data-product-id="{{ planta_id }}">Agregar al Carrito</button>
-
+                        <a href="{% url 'add_to_cart' planta.plant_id %}" class="btn" style="background-color: rgb(255,179,71);">Agregar al Carrito</a>
                     </div>
                 </div>
             </div>

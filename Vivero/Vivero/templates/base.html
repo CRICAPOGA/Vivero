@@ -13,7 +13,7 @@
             background-color: rgba(82, 66, 9, 0.1);
             background-blend-mode: darken;
         }
-        
+
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -78,7 +78,7 @@
                 {% endif %}
                 <span class="fw-bold text-white">Verde Vida</span>
             </a>
-            
+
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,7 +98,7 @@
                             <ion-icon name="bag-handle-outline"></ion-icon> Catalogo
                         </a>
                     </li>
-                    
+
                     {% if user.is_authenticated and user.role_id.role_id == 1 %}
                     <li class="nav-item me-3">
                         <a class="nav-link text-white" href="{% url 'cart_view' %}">
@@ -147,6 +147,14 @@
                     <a href="{% url 'plantas' %}" class="btn w-100 text-white"
                         style="background-color: rgb(85, 120, 25); border: none;">Plantas</a>
                 </li>
+                
+                <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
+                    {% if user.is_staff %}
+                    <a href="{% url 'sales_history' %}" class="btn w-100 text-white"
+                    style="background-color: rgb(85, 120, 25); border: none;">Historial de Ventas</a>
+                    {% endif %}
+
+                </li>
             </ul>
         </div>
         {% endif %}
@@ -165,4 +173,5 @@
 <footer class="bg text-white text-center py-3" style="background-color: #8c674a;">
     <p>&copy; 2024 Vivero Verde Vida. Todos los derechos reservados.</p>
 </footer>
+
 </html>
