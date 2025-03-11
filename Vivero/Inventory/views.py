@@ -87,6 +87,7 @@ def editarPlanta(request, planta_id):
 
         plants.save()
         messages.success(request, f'La planta "{plants.plant_name}" ha sido actualizado exitosamente.')
+        verificar_stock(request)
         return redirect('plantas')
     
     return render(request, 'CRUD Planta/editarPlanta.html', {'plants': plants, 'categories': categories})
@@ -117,6 +118,7 @@ def crearPlanta(request):
         plant = Plant(plant_name=plant_name, care=care, price=price, stock=stock, category_id=category)
         plant.save()
         messages.success(request, f'La planta "{plant.plant_name}" ha sido creado exitosamente.')
+        verificar_stock(request)
         return redirect('plantas')
     
     return render(request, 'CRUD Planta/crearPlanta.html', {'categories': categories})
