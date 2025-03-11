@@ -6,7 +6,7 @@ from .models import Categorie, Plant
 from django.core.files.storage import default_storage
 from .models import Plant, Categorie
 from django.contrib import messages
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 
 class Vista_subir_excel(View):
     def post(self, request):
@@ -57,17 +57,20 @@ class Vista_subir_excel(View):
 
 
 ############## CRUD PLANTAS ##############
+@login_required
 def plantas(request):
     plants = Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories})
 
+@login_required
 def plantasPorCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id)
     plants = Plant.objects.filter(category_id=categoria)
     categories = Categorie.objects.all()
     return render(request, 'CRUD Planta/plantas.html', {'categories': categories, 'plants': plants, 'categoria': categoria})
 
+@login_required
 def editarPlanta(request, planta_id):
     plants = get_object_or_404(Plant, plant_id=planta_id)
     categories = Categorie.objects.all()
@@ -88,6 +91,7 @@ def editarPlanta(request, planta_id):
     
     return render(request, 'CRUD Planta/editarPlanta.html', {'plants': plants, 'categories': categories})
 
+@login_required
 def crearPlanta(request):
     categories = Categorie.objects.all()
     
@@ -117,7 +121,7 @@ def crearPlanta(request):
     
     return render(request, 'CRUD Planta/crearPlanta.html', {'categories': categories})
 
-
+@login_required
 def eliminarPlanta(request, planta_id):
     plants = get_object_or_404(Plant, plant_id=planta_id)
     if request.method == 'POST':
@@ -126,6 +130,7 @@ def eliminarPlanta(request, planta_id):
         return redirect('plantas')
     return render(request, 'CRUD Planta/eliminarPlanta.html', {'plants': plants})
 
+@login_required
 def buscarPlanta(request):
     query = request.GET.get('buscarPlanta', '').strip()
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
@@ -133,17 +138,20 @@ def buscarPlanta(request):
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories, 'query': query})
 
 #######CATALOGO PLANTAS##########
+@login_required
 def catalogoPlantas(request):
     plants = Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories})
 
+@login_required
 def catalogoCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id) 
     plants = Plant.objects.filter(category_id=categoria)
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'categoria': categoria})
 
+@login_required
 def catalogoBuscar(request):
     query = request.GET.get('buscarPlanta')
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
