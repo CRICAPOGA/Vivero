@@ -15,15 +15,15 @@
 
          <!-- Filtros -->
          <div class="row mb-3 align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-6 w-80">
                 <form method="GET" action="{% url 'catalogoBuscar' %}">
                     <input type="text" class="form-control border-warning" name="buscarPlanta"
                         placeholder="Buscar plantas..." value="{{ query|default:'' }}">
                 </form>
             </div>
-            <div class="col-md-4">
-                <div class="dropdown w-100">
-                    <button type="button" class="btn dropdown-toggle w-100 text-start" 
+            <div class="col-md-2 text-end ">
+                <div class="dropdown w-80">
+                    <button type="button" class="btn dropdown-toggle w-80 text-start" 
                             style="background-color: rgb(255,179,71);" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false" 
@@ -34,7 +34,7 @@
                             Selecciona una categoría
                         {% endif %}
                     </button>
-                    <ul class="dropdown-menu w-100">
+                    <ul class="dropdown-menu w-80">
                         <li>
                             <a class="dropdown-item" href="{% url 'catalogoPlantas' %}">Todas las categorías</a>
                         </li>
@@ -72,7 +72,9 @@
                             <span class="fw-bold" style="color: #b58863;">Recomendaciones de cuidados:</span> {{ planta.care }}
                         </p>
                         <button class="btn" style="background-color: rgb(255,179,71);" data-product-id="{{ planta_id }}">Agregar al Carrito</button>
-
+                        <a href="#" class="btn btn-success fw-bold shadow add-to-cart" data-id="{{ planta.plant_id }}">
+                            Agregar al carrito
+                        </a>
                     </div>
                 </div>
             </div>
