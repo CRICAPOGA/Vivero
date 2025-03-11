@@ -12,7 +12,8 @@ class Vista_subir_excel(View):
     def post(self, request):
         file = request.FILES.get('file')
         if not file:
-            return JsonResponse({'error': 'No se ha subido ningún archivo'}, status=400)
+            messages.error(request, 'No se ha subido ningún archivo')
+            return render(request, 'plantas.html')
 
         # Guardar temporalmente el archivo
         file_path = default_storage.save(file.name, file)
@@ -41,16 +42,18 @@ class Vista_subir_excel(View):
                     plant.stock += stock  # Sumar stock existente
                     plant.save()
 
-            return JsonResponse({'message': 'Stock actualizado correctamente'})
+            messages.success(request, 'Stock actualizado correctamente')
+            return render(request, 'plantas.html')
         except Exception as e:
-            message = {'error': f'Ocurrió un error: {str(e)}'}
+            messages.error(request, f'Ocurrió un error: {str(e)}')
+            return render(request, 'plantas.html')
 
         finally:
             # Eliminar el archivo después de procesarlo
             if default_storage.exists(file_path):
                 default_storage.delete(file_path)
 
-        return JsonResponse(message)
+        return render(request, 'plantas.html')
 
 
 ############## CRUD PLANTAS ##############
