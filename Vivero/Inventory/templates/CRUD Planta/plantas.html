@@ -37,7 +37,8 @@
                 <div class="dropdown w-100">
                     <button type="button" class="btn dropdown-toggle w-100 text-start" 
                             style="background-color: rgb(255,179,71);" 
-                            data-bs-toggle="dropdown" 
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="true" 
                             aria-expanded="false" 
                             id="categoryDropdown">
                         {% if categoria %}
@@ -127,6 +128,29 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var dropdownButton = document.getElementById("categoryDropdown");
+        var dropdownMenu = document.querySelector(".dropdown-menu");
+
+        dropdownButton.addEventListener("click", function () {
+            var dropdown = new bootstrap.Dropdown(dropdownButton);
+            dropdown.toggle();
+        });
+
+        // Cierra el dropdown si el usuario hace clic fuera de él
+        document.addEventListener("click", function (event) {
+            if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                var openDropdown = bootstrap.Dropdown.getInstance(dropdownButton);
+                if (openDropdown) {
+                    openDropdown.hide();
+                }
+            }
+        });
+    });
+</script>
 
 {% endblock%}
 
