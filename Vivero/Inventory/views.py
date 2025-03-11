@@ -46,14 +46,14 @@ class Vista_subir_excel(View):
             return redirect('plantas')
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
-            return redirect('plantas.html')
+            return redirect('plantas')
 
         finally:
             # Eliminar el archivo después de procesarlo
             if default_storage.exists(file_path):
                 default_storage.delete(file_path)
 
-        return redirect('plantas.html')
+        return redirect('plantas')
 
 
 ############## CRUD PLANTAS ##############

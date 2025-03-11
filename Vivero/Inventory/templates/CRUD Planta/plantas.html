@@ -80,7 +80,6 @@
             <table class="table table-bordered table-hover rounded-3 overflow-hidden">
                 <thead class="text-white" style="background-color: rgb(107, 142, 35);">
                     <tr>
-                        <th class="text-center">Imagen</th>
                         <th class="text-center">Categoria</th>
                         <th class="text-center">Nombre</th>
                         <th class="text-center">Recomendaciones de cuidados</th>
@@ -91,13 +90,6 @@
                 <tbody>
                     {% for planta in plants %}
                         <tr>
-                            <td class="text-center">
-                                {% if planta.image %}
-                                    <img src="{{ planta.image.url }}" alt="{{ planta.name }}" class="rounded" width="100">
-                                {% else %}
-                                    <span class="text-muted">Sin imagen</span>
-                                {% endif %}
-                            </td>
                             <td class="align-middle">{{ planta.category_id}}</td>
                             <td class="align-middle">{{ planta.plant_name}}</td>
                             <td class="align-middle">{{ planta.care }}</td>
