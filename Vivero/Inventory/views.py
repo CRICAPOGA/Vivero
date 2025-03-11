@@ -13,7 +13,7 @@ class Vista_subir_excel(View):
         file = request.FILES.get('file')
         if not file:
             messages.error(request, 'No se ha subido ningún archivo')
-            return render(request, 'plantas.html')
+            return redirect('plantas')
 
         # Guardar temporalmente el archivo
         file_path = default_storage.save(file.name, file)
@@ -46,14 +46,14 @@ class Vista_subir_excel(View):
             return render(request, 'plantas.html')
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
-            return render(request, 'plantas.html')
+            return redirect('plantas.html')
 
         finally:
             # Eliminar el archivo después de procesarlo
             if default_storage.exists(file_path):
                 default_storage.delete(file_path)
 
-        return render(request, 'plantas.html')
+        return redirect('plantas.html')
 
 
 ############## CRUD PLANTAS ##############
