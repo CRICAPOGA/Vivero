@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Authentication',
     'Inventory',
     'Sales'
+
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "Vivero" /"static",  # Directorio de archivos estáticos común
+    BASE_DIR / "Authentication" / "static",
+    BASE_DIR / "Sales" / "static",
+    BASE_DIR / "Inventory" / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

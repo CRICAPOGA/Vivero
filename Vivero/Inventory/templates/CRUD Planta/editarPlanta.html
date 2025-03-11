@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar{% endblock %}
+
+{% block content %}
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS (necesario para dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3" style="background-color:#f5f5dc;">
+    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-5 col-md-8 col-sm-10 d-flex flex-column flex-grow-1">
+        <h2 class="text-center fw-bold mb-4" style="color:  rgb(107, 142, 35);">Editar Planta</h2>
+        <hr class="border-1 opacity-75" style="color:  rgb(107, 142, 35);">
+
+         <!-- Mensajes de éxito, error, advertencia -->
+         {% if messages %}
+         <div class="container">
+             {% for message in messages %}
+                 <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                     {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                 </div>
+             {% endfor %}
+         </div>
+         {% endif %}
+
+        <form method="post" class="d-flex flex-column flex-grow-1">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="plant_name" class="form-label fw-bold" style="color: #b58863;">Nombre de la planta:</label>
+                <input type="text" id="plant_name" name="plant_name" class="form-control" style="border-color: rgb(255,179,71);" value="{{ plants.plant_name }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="care" class="form-label fw-bold" style="color: #b58863;">Recomendaciones de Cuidados:</label>
+                <textarea id="care" name="care" class="form-control" style="border-color: rgb(255,179,71);" rows="3" required>{{ plants.care }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_price" class="form-label fw-bold" style="color: #b58863;">Precio:</label>
+                <input type="number" id="id_price" name="price" step="0.01" class="form-control" style="border-color: rgb(255,179,71);" value="{{ plants.price }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="stock" class="form-label fw-bold" style="border-color: #b58863;">Cantidad:</label>
+                <input type="number" id="stock" name="stock" class="form-control" style="border-color: rgb(255,179,71);" value="{{ plants.stock }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="fw-bold" style="color: #b58863;">Categoría:</label>
+                <div class="dropdown w-100">
+                    <button type="button" class="btn dropdown-toggle w-100 text-start" style="background-color: rgb(255,179,71);" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if plants.category_id %}{{ plants.category_id.category }}
+                        {% else %}
+                        Selecciona una categoría
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        {% for categoria in categories %}
+                        <li>
+                            <a class="dropdown-item" onclick="selectCategory('{{ categoria.category_id }}', '{{ categoria.category }}')">
+                                {{ categoria.category }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <input type="hidden" name="category" id="selectedCategory" value="{{ plants.category_id.category_id }}">
+            </div>
+            
+            <script>
+                function selectCategory(id, name) {
+                    document.querySelector('.dropdown button').textContent = name;
+                    document.getElementById('selectedCategory').value = id;
+                }
+            </script>
+
+            <div class="d-flex justify-content-center flex-wrap mt-4">
+                <button type="submit" class="btn px-4 mx-2"  style="background-color:  rgb(107, 142, 35);">Guardar cambios</button>
+                <a href="{% url 'plantas' %}" class="btn px-4 mx-2" style="background-color:  rgb(107, 142, 35);">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
