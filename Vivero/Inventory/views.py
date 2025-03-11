@@ -43,7 +43,7 @@ class Vista_subir_excel(View):
                     plant.save()
 
             messages.success(request, 'Stock actualizado correctamente')
-            return render(request, 'plantas.html')
+            return redirect('plantas')
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
             return redirect('plantas.html')
