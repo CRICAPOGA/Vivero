@@ -1,42 +1,57 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Usuarios</title>
-</head>
-<body>
-    <h2>Lista de Usuarios</h2>
-    <a href="{% url 'crear_usuario' %}">Crear Usuario</a>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario in usuarios %}
-                {% if usuario.role_id.role_id != 3 %}
+{% extends 'base.html' %}
+
+{% block title %}Usuarios{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-120 px-3">
+    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-9 col-md-10 col-sm-12" style="background-color:#f5f5dc;">
+        <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Gestión de Usuarios</h2>
+        <hr class="border-1 opacity-75 mt-1">
+        
+        <!-- Botón para agregar usuario -->
+        <div class="text-end mb-3">
+            <a href="{% url 'crear_usuario' %}" class="btn shadow" style="background-color: rgb(107, 142, 35); color: white;"> + Agregar </a>
+        </div>
+
+        <!-- Tabla de Usuarios -->
+        <div class="table-responsive" style="background-color:#f5f5dc;">
+            <table class="table table-bordered table-hover rounded-3 overflow-hidden">
+                <thead class="text-white" style="background-color: rgb(107, 142, 35);">
                     <tr>
-                        <td>{{ usuario.user_id }}</td>
-                        <td>{{ usuario.username }}</td>
-                        <td>{{ usuario.email }}</td>
-                        <td>{{ usuario.name }}</td>
-                        <td>{{ usuario.last_name }}</td>
-                        <td>{{ usuario.role_id.role }}</td>
-                        <td>
-                            <a href="{% url 'editar_usuario' usuario.user_id %}">Editar</a>
-                            <a href="{% url 'eliminar_usuario' usuario.user_id %}" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
-                        </td>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Username</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Apellido</th>
+                        <th class="text-center">Rol</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        {% if usuario.role_id.role_id != 3 %}
+                            <tr>
+                                <td class="align-middle text-center">{{ usuario.user_id }}</td>
+                                <td class="align-middle">{{ usuario.username }}</td>
+                                <td class="align-middle">{{ usuario.email }}</td>
+                                <td class="align-middle">{{ usuario.name }}</td>
+                                <td class="align-middle">{{ usuario.last_name }}</td>
+                                <td class="align-middle text-center">{{ usuario.role_id.role }}</td>
+                                <td class="text-center align-middle">
+                                    <a href="{% url 'editar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm" style="background-color: #b58863; color: white;">Editar</a>
+                                    <a href="{% url 'eliminar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm" style="background-color: #b58863; color: white;" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

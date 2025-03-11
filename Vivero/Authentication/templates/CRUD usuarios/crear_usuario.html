@@ -1,39 +1,57 @@
-<!DOCTYPE html>
-<html lang="es">
+<{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Crear Usuario</title>
-</head>
+{% block title %}Crear Usuario{% endblock %}
 
-<body>
-    <h2>Crear Usuario</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label>Username:</label>
-        <input type="text" name="username" required><br>
+{% load static %}
 
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-120 px-3">
+    <div class="card shadow-lg bg-white rounded-4 p-5 m-4 col-lg-5 col-md-8 col-sm-12" style="background-color:#f5f5dc;">
+        <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Crear Usuario</h2>
+        <hr class="border-1 opacity-75 mt-1">
 
-        <label>Nombre:</label>
-        <input type="text" name="name" required><br>
+        <form method="post">
+            {% csrf_token %}
 
-        <label>Apellido:</label>
-        <input type="text" name="last_name" required><br>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <label>Contraseña:</label>
-        <input type="password" name="password" required><br>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <select name="role_id" required>
-            {% for role in roles %}
-            <option value="{{ role.role_id }}">{{ role.role }}</option>
-            {% endfor %}
-        </select>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre:</label>
+                <input type="text" id="name" name="name" class="form-control" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <button type="submit">Crear</button>
-    </form>
-    <a href="{% url 'lista_usuarios' %}">Volver</a>
-</body>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Apellido:</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" required style="border-color: rgb(255,179,71);">
+            </div>
 
-</html>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input type="password" id="password" name="password" class="form-control" required style="border-color: rgb(255,179,71);">
+            </div>
+
+            <div class="mb-3">
+                <label for="role_id" class="form-label">Rol:</label>
+                <select name="role_id" id="role_id" class="form-select" required style="border-color: rgb(255,179,71);">
+                    {% for role in roles %}
+                    <option value="{{ role.role_id }}">{{ role.role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn shadow w-auto px-5 mt-3" style="background-color: rgb(107, 142, 35); color: white;">Crear</button>
+                <a href="{% url 'lista_usuarios' %}" class="btn shadow w-auto px-5 mt-3 ms-3" style="background-color: rgb(199, 86, 86); color: white;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

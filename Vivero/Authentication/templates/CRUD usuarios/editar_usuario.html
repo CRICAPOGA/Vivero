@@ -1,41 +1,57 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Usuario</title>
-</head>
+{% block title %}Editar Usuario{% endblock %}
 
-<body>
-    <h2>Editar Usuario</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label>Username:</label>
-        <input type="text" name="username" value="{{ usuario.username }}" required><br>
+{% load static %}
 
-        <label>Email:</label>
-        <input type="email" name="email" value="{{ usuario.email }}" required><br>
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-120 px-3">
+    <div class="card shadow-lg bg-white rounded-4 p-5 m-4 col-lg-5 col-md-8 col-sm-12" style="background-color:#f5f5dc;">
+        <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Editar Usuario</h2>
+        <hr class="border-1 opacity-75 mt-1">
 
-        <label>Nombre:</label>
-        <input type="text" name="name" value="{{ usuario.name }}" required><br>
+        <form method="post">
+            {% csrf_token %}
 
-        <label>Apellido:</label>
-        <input type="text" name="last_name" value="{{ usuario.last_name }}" required><br>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{ usuario.username }}" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <label>Contraseña (dejar en blanco para no cambiar):</label>
-        <input type="password" name="password"><br>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ usuario.email }}" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <select name="role_id" required>
-            {% for role in roles %}
-            <option value="{{ role.role_id }}" {% if usuario.role_id == role %}selected{% endif %}>
-                {{ role.role }}
-            </option>
-            {% endfor %}
-        </select>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre:</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ usuario.name }}" required style="border-color: rgb(255,179,71);">
+            </div>
 
-        <button type="submit">Guardar</button>
-    </form>
-    <a href="{% url 'lista_usuarios' %}">Volver</a>
-</body>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Apellido:</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" value="{{ usuario.last_name }}" required style="border-color: rgb(255,179,71);">
+            </div>
 
-</html>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña (dejar en blanco para no cambiar):</label>
+                <input type="password" id="password" name="password" class="form-control" style="border-color: rgb(255,179,71);">
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label">Rol:</label>
+                <select id="role" name="role_id" class="form-control" required style="border-color: rgb(255,179,71);">
+                    {% for role in roles %}
+                    <option value="{{ role.role_id }}" {% if usuario.role_id == role.role_id %}selected{% endif %}>{{ role.role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn shadow w-auto px-5 mt-3" style="background-color: rgb(107, 142, 35); color: white;">Guardar</button>
+                <a href="{% url 'lista_usuarios' %}" class="btn shadow w-auto px-5 mt-3 ms-3" style="background-color: rgb(199, 86, 86); color: white;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
