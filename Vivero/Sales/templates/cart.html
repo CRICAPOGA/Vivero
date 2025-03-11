@@ -2,8 +2,7 @@
 {% block title %}Carrito de Compras{% endblock %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3"
-    style="background: #f5f5dc;">
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3" style="background: #f5f5dc;">
     <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-9 col-md-10 col-sm-12">
         <h2 class="text-center text-success fw-bold mt-2 mb-4">Carrito de Compras</h2>
         <hr class="border-1 opacity-75 mt-1">
@@ -27,15 +26,14 @@
                         <td class="align-middle text-center">${{ item.price }}</td>
                         <td class="align-middle text-center">
                             <div class="d-flex justify-content-center">
-                                <input type="number" id="quantity-{{ key }}" value="{{ item.quantity }}"
-                                    class="form-control text-center"
-                                    style="width: 80px; text-align: center; margin: auto;" min="1"
-                                    onchange="updateQuantity('{{ key }}')">
+                                <a href="{% url 'decrement_from_cart' item.plant_id %}" class="btn btn-sm btn-warning">-</a>
+                                <span class="mx-2">{{ item.quantity }}</span>
+                                <a href="{% url 'increment_from_cart' item.plant_id %}" class="btn btn-sm btn-success">+</a>
                             </div>
                         </td>
-                        <td class="align-middle text-center" id="subtotal-{{ key }}">${{ item.subtotal }}</td>
+                        <td class="align-middle text-center" id="subtotal-{{ key }}">${{ item.subtotal|floatformat:2 }}</td>
                         <td class="align-middle text-center">
-                            <a href="{% url 'remove_from_cart' key %}" class="btn btn-danger btn-sm fw-bold shadow-sm">
+                            <a href="{% url 'remove_from_cart' item.plant_id %}" class="btn btn-danger btn-sm fw-bold shadow-sm">
                                 <ion-icon name="trash-outline"></ion-icon>
                             </a>
                         </td>
@@ -46,52 +44,77 @@
         </div>
         <hr class="border-1 opacity-75 mt-1">
 
-        <!-- Sección total separada y alineada a la derecha -->
         <div class="d-flex justify-content-end mt-3">
-            <h5><strong>Total: $<span id="cart-total">{{ total }}</span></strong></h5>
+            <h5><strong>Total: $<span id="cart-total">{{ total|floatformat:2 }}</span></strong></h5>
         </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{% url 'clean_cart' %}" class="btn btn-danger fw-bold shadow">Vaciar Carrito</a>
+            <a href="#" onclick="confirmPurchase()" class="btn fw-bold shadow"
+                style="background-color: #28a745; color: white;">Comprar</a> 
+        </div>
+        
         {% else %}
         <p class="text-center">Tu carrito está vacío</p>
         {% endif %}
-
-
-        <!-- Botones de navegación -->
         <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'catalogoPlantas' %}" class="btn fw-bold shadow"
-                style="background-color: #b58863; color: white;">Volver al Catálogo</a>
-            <a href="{% url 'catalogoPlantas' %}" class="btn fw-bold shadow"
-                style="background-color: #28a745; color: white;">Comprar</a>
+            <a href="{% url 'catalogoPlantas' %}" class="btn fw-bold shadow" style="background-color: #b58863; color: white;">Volver al Catálogo</a>
         </div>
-
     </div>
 </div>
-
 <script>
-    function updateQuantity(plantId) {
-        let quantityInput = document.getElementById('quantity-' + plantId);
-        let newQuantity = parseInt(quantityInput.value);
-
-        if (newQuantity < 1) {
-            window.location.href = `/cart/remove/${plantId}/`;  // Si llega a 0, elimina el producto
-        } else {
-            fetch(`/cart/update/${plantId}/`, {
-                method: 'POST',
+    function confirmPurchase() {
+        Swal.fire({
+            title: "¿Todo listo para realizar tu pedido?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "¡Sí, confirmar!",
+            cancelButtonText: "No, aún no"
+        }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("{% url 'catalogoPlantas' %}", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `quantity=${newQuantity}`
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('subtotal-' + plantId).innerText = `$${data.subtotal}`;
-                        document.getElementById('cart-total').innerText = `$${data.total}`;
-                    }
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: "¡Pedido enviado con éxito!",
+                        text: "Pronto nos pondremos en contacto contigo",
+                        icon: "success",
+                        allowOutsideClick: false,
+                        confirmButtonColor: "#28a745",
+                    }).then(() => {
+                        window.location.href = "{% url 'catalogoPlantas' %}";
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: data.error || "No se pudo procesar tu pedido",
+                        icon: "error"
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Error",
+                    text: "Hubo un problema al procesar tu pedido",
+                    icon: "error"
                 });
+            });
         }
-    }
+    });
+}
 </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 {% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Pedidos{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3"
+    style="background: #f5f5dc;">
+    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-9 col-md-10 col-sm-12">
+        <h2 class="text-center text-success fw-bold mt-2 mb-4">Lista de Pedidos</h2>
+        <hr class="border-1 opacity-75 mt-1">
+
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-borderless table-hover rounded-3 overflow-hidden">
+                <thead class="text-white" style="background-color: #b58863;">
+                    <tr>
+                        <th class="text-center">ID Pedido</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="align-middle text-center">{{ order.id }}</td>
+                        <td class="align-middle text-center">{{ order.date|date:"d/m/Y H:i" }}</td>
+                        <td class="align-middle text-center">${{ order.total_price }}</td>
+                        <td class="align-middle text-center">
+                            <span class="badge {% if order.status == 'Completado' %}bg-success{% elif order.status == 'Pendiente' %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td class="align-middle text-center">
+                            <a href="{% url 'order_detail' order.id %}" class="btn btn-info btn-sm fw-bold shadow-sm">
+                                <ion-icon name="eye-outline"></ion-icon> Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center">No hay pedidos registrados.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+{% endblock %}
+
