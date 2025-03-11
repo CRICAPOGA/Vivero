@@ -62,9 +62,9 @@
             </div>            
 
             <div class="col-md-2 text-end">
-                <form action="{%url'subir_excel'%}" method="post" enctype="multipart/form-data">
+                <form action="{% url 'subir_excel'%}" method="post" enctype="multipart/form-data">
                     {%csrf_token%}
-                    <input type="file" name="file">
+                    <input type="file" name="file" style="background-color: rgb(255,179,71);">
                     <button type="submit" style="background-color: rgb(255,179,71);">Subir</button>
                 </form>
             </div>
