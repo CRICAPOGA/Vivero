@@ -41,7 +41,7 @@ class Vista_subir_excel(View):
                 if not created:
                     plant.stock += stock  # Sumar stock existente
                     plant.save()
-
+            verificar_stock(request)
             messages.success(request, 'Stock actualizado correctamente')
             return redirect('plantas')
         except Exception as e:
@@ -157,3 +157,10 @@ def catalogoBuscar(request):
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'query': query})
+
+############## STOCK BAJO ##############
+def verificar_stock(request):
+    plants = Plant.objects.all()
+    for plant in plants:
+        if plant.stock <= 5:
+            messages.warning(request, f'!STOCK BAJO de {plant.plant_name}¡')
