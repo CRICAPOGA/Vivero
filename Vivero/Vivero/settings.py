@@ -58,7 +58,12 @@ ROOT_URLCONF = 'Vivero.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "Vivero" /"templates",
+            BASE_DIR / "Authentication" / "templates",
+            BASE_DIR / "Sales" / "templates",
+            BASE_DIR / "Inventory" / "templates",
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
