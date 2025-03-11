@@ -123,7 +123,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Asegura que tu carpeta 'static' está incluida
+    BASE_DIR / "Vivero" /"static",  # Directorio de archivos estáticos común
+    BASE_DIR / "Authentication" / "static",
+    BASE_DIR / "Sales" / "static",
+    BASE_DIR / "Inventory" / "static",
 ]
 
 # Default primary key field type
