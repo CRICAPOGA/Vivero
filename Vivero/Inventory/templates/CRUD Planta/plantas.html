@@ -61,12 +61,32 @@
                 </div>
             </div>            
 
-            <div class="col-md-2 text-end">
-                <form action="{% url 'subir_excel'%}" method="post" enctype="multipart/form-data">
-                    {%csrf_token%}
-                    <input type="file" name="file" style="background-color: rgb(255,179,71);">
-                    <button type="submit" style="background-color: rgb(255,179,71);">Subir</button>
-                </form>
+            <!-- Botón para abrir el popup -->
+            <div class="text-end me-3">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    Subir Archivo
+                </button>
+            </div>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="uploadModalLabel">Subir Archivo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'subir_excel' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <input type="file" name="file" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-warning">Subir</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
