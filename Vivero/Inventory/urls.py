@@ -3,11 +3,15 @@ from . import views
 
 urlpatterns = [
     path('plantas/', views.plantas, name='plantas'),
+    path('plantas/categoria/<int:categoria_id>/', views.plantasPorCategoria, name='plantasPorCategoria'),
+    path('plantas/crear/', views.crearPlanta, name='crearPlanta'),
+    path('plantas/editar/<int:planta_id>/', views.editarPlanta, name='editarPlanta'),
+    path('plantas/eliminar/<int:planta_id>/', views.eliminarPlanta, name='eliminarPlanta'),
+    path('plantas/buscar/', views.buscarPlanta, name='buscarPlanta'),
 
     path('catalogoPlantas/', views.catalogoPlantas, name='catalogoPlantas'),
-    path('catalogoPlantas/plantas/categoria/<int:categoria_id>/', views.catalogoCategoria, name='catalogoCategoria'),
-    path('catalogoPlantas/plantas/buscar/', views.catalogoBuscar, name='catalogoBuscar'),
-
+    path('catalogoPlantas/buscar/', views.catalogoBuscar, name='catalogoBuscar'),
+    path('catalogoPlantas/categoria/<int:categoria_id>/', views.catalogoCategoria, name='catalogoCategoria'),
 ]
 
 

@@ -1,30 +1,78 @@
 {% extends 'base.html' %}
 
-{% block title %}CATÁLOGO{% endblock %}
+{% block title %}Catálogo{% endblock %}
 
 {% load static %}
 
 {% block content %}
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3"
-    style="background: linear-gradient(135deg,rgb(107,142,35), rgb(255,179,71));">
-    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-11 col-md-10 col-sm-12">
-        <h2 class="text-center text-success fw-bold mt-2 mb-4">Catálogo</h2>
+<!-- Bootstrap JS (necesario para dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3">
+    <div class="card shadow-lg rounded-4 p-4 m-4 col-lg-11 col-md-10 col-sm-12" style="background-color:#f5f5dc;">
+        <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Catálogo</h2>
         <hr class="border-1 opacity-75 mt-1">
+
+         <!-- Filtros -->
+         <div class="row mb-3 align-items-center">
+            <div class="col-md-6">
+                <form method="GET" action="{% url 'catalogoBuscar' %}">
+                    <input type="text" class="form-control border-warning" name="buscarPlanta"
+                        placeholder="Buscar plantas..." value="{{ query|default:'' }}">
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div class="dropdown w-100">
+                    <button type="button" class="btn dropdown-toggle w-100 text-start" 
+                            style="background-color: rgb(255,179,71);" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false" 
+                            id="categoryDropdown">
+                        {% if categoria %}
+                            {{ categoria.category }}
+                        {% else %}
+                            Selecciona una categoría
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'catalogoPlantas' %}">Todas las categorías</a>
+                        </li>
+                        {% for categoria_item in categories %}
+                        <li>
+                            <a class="dropdown-item" href="{% url 'catalogoCategoria' categoria_item.category_id %}">
+                                {{ categoria_item.category }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div> 
+        </div>
 
         <!-- Mostrar plantas en tarjetas -->
         <div class="row">
             {% for planta in plants %}
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card" style="background-color: #f5f5dc;">
+                <div class="card" style="background-color:#f5f5dc;">
                     {% if planta.image %}
                     <img src="{{ planta.image.url }}" class="card-img-top" alt="{{ planta.name }}">
                     {% else %}
                     <img src="{% static 'img/default-product.jpg' %}" class="card-img-top" alt="Imagen no disponible">
                     {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title" style="color: #b58863;">{{ planta.name }}</h5>
-                        <p class="card-text">{{ planta.care }}</p>
-                        <button class="btn" style="background-color: rgb(255,179,71); color: white; data-product-id="{{ planta.id }}">Agregar al Carrito</button>
+                        <h5 class="card-title">{{ planta.name }}</h5>
+                        <p class="card-text">
+                            <span class="fw-bold" style="color: #b58863;">Nombre:</span> {{ planta.plant_name }}
+                        </p>
+                        <p class="card-text">
+                            <span class="fw-bold" style="color: #b58863;">Categoria:</span> {{ planta.category_id }}
+                        </p>
+                        <p class="card-text">
+                            <span class="fw-bold" style="color: #b58863;">Recomendaciones de cuidados:</span> {{ planta.care }}
+                        </p>
+                        <button class="btn" style="background-color: rgb(255,179,71);" data-product-id="{{ planta_id }}">Agregar al Carrito</button>
+
                     </div>
                 </div>
             </div>
@@ -32,46 +80,5 @@
             <p class="text-center">No hay plantas disponibles.</p>
             {% endfor %}
         </div>
-        
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectedProducts = [];
-
-        // Manejar la selección de plantas
-        const selectButtons = document.querySelectorAll('.select-plant');
-        selectButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const plantId = button.getAttribute('data-plant-id');
-                if (!selectedPlants.includes(planttId)) {
-                    selectedPlants.push(plantId);
-
-                    // Añadir una planta a la tabla de ventas
-                    const row = document.createElement('tr');
-                    row.setAttribute('data-plant-id', plantId);
-                    row.innerHTML = `
-                        <td>${button.closest('.card-body').querySelector('.card-title').textContent}</td>
-                        <td>${button.closest('.card-body').querySelector('.card-text').textContent}</td>
-                        <td><input type="number" class="form-control quantity-input" value="1" min="1"></td>
-                        <td><button class="btn btn-danger remove-plant">Eliminar</button></td>
-                    `;
-                    document.querySelector('#venta-table tbody').appendChild(row);
-                }
-            });
-        });
-
-        // Eliminar planta de la venta
-        document.querySelector('#venta-table').addEventListener('click', function(event) {
-            if (event.target.classList.contains('remove-plant')) {
-                const row = event.target.closest('tr');
-                const plantId = row.getAttribute('data-plant-id');
-                const index = selectedPlants.indexOf(plantId);
-                if (index > -1) {
-                    selectedPlants.splice(index, 1);
-                }
-                row.remove();
-            }
-        });
-    });
-</script> -->
 
 {% endblock %}

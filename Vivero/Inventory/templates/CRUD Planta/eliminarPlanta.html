@@ -3,11 +3,25 @@
 {% block title %}Eliminar Planta{% endblock %}
 
 {% block content %}
-    <h1>Eliminar Planta</h1>
-    <p>¿Estás seguro de que deseas eliminar la planta "{{ planta.name }}"?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a href="{% url 'planta' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS (necesario para dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3" style="background-color:#f5f5dc;">
+    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-5 col-md-8 col-sm-10 text-center">
+        <h2 class="text-center fw-bold mb-4" style="color: #b58863;">Eliminar Planta</h2>
+        <hr class="border-1 opacity-75" style="color:  rgb(107, 142, 35);">
+        
+        <p class="fs-5 text-dark">¿Estás seguro de que deseas eliminar la planta <strong>"{{ plants.plant_name }}"</strong>?</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center flex-wrap mt-4">
+                <button type="submit" class="btn px-4 mx-2 text-white" style="background-color: #d9534f;">Eliminar</button>
+                <a href="{% url 'plantas' %}" class="btn px-4 mx-2 text-white" style="background-color:  rgb(107, 142, 35);">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

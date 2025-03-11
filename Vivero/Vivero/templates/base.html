@@ -12,15 +12,19 @@
     {% block style %}{% endblock %}
     <title>{% block title %}{% endblock%}</title>
 </head>
-<body style="background-color: #F5F5DC;">
+<body style="background-color: #f5f5dc;">
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(107, 142, 35); padding: 0px">
         <div class="container-fluid">
-            
-            <h1>Hola</h1>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'img/Logo.png' %}" class="img-fluid" style="height: 50px; width: 160px;" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </nav>
     {% block content %}
     {% endblock %}
-</div>
+    </div>
 </body>
 </html>
