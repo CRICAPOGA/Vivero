@@ -42,8 +42,12 @@
                                 <td class="align-middle">{{ usuario.last_name }}</td>
                                 <td class="align-middle text-center">{{ usuario.role_id.role }}</td>
                                 <td class="text-center align-middle">
-                                    <a href="{% url 'editar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm" style="background-color: #b58863; color: white;">Editar</a>
-                                    <a href="{% url 'eliminar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm" style="background-color: #b58863; color: white;" onclick="return confirm('¿Estás seguro?');">Eliminar</a>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <a href="{% url 'editar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm"
+                                            style="background-color: #b58863; color: white;">Editar</a>
+                                        <a href="{% url 'eliminar_usuario' usuario.user_id %}" class="btn btn-sm shadow-sm"
+                                            style="background-color: #b58863; color: white;">Eliminar</a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endif %}
