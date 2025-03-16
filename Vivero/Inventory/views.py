@@ -149,23 +149,41 @@ def buscarPlanta(request):
 #######CATALOGO PLANTAS##########
 #@login_required
 def catalogoPlantas(request):
-    plants = Plant.objects.all()
+    plants_list = Plant.objects.all()
     categories = Categorie.objects.all()
-    return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories})
+
+    # Configurar paginación (mostrar 8 plantas por página)
+    paginator = Paginator(plants_list, 8)  
+    page_number = request.GET.get('page')
+    plants = paginator.get_page(page_number)
+
+    return render(request, 'Catalogo/catalogoPlantas.html', {
+        'plants': plants,
+        'categories': categories
+    })
 
 #@login_required
 def catalogoCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id) 
     plants = Plant.objects.filter(category_id=categoria)
     categories = Categorie.objects.all()
-    return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'categoria': categoria})
+
+    # Configurar paginación (mostrar 8 plantas por página)
+    paginator = Paginator(plants, 8)  
+    page_number = request.GET.get('page')
+    plants = paginator.get_page(page_number)
+
+    return render(request, 'Catalogo/catalogoPlantas.html', {
+        'plants': plants,
+        'categories': categories
+    })
 
 #@login_required
 def catalogoBuscar(request):
     query = request.GET.get('buscarPlanta')
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
     categories = Categorie.objects.all()
-    return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'query': query})
+    return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories})
 
 ############## STOCK BAJO ##############
 def verificar_stock(request):
