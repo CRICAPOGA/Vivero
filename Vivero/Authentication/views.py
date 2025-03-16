@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import User, Role
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 def login_view(request):
@@ -22,6 +24,29 @@ def login_auth(request):
             messages.error(request,'Credenciales incorrectas')
             return render(request, 'login.html')
     return render(request, 'login.html')
+
+def password_recovery(request):
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, "El usuario no existe.")
+            return redirect('login')
+
+        asunto = "Recuperación de contraseña"
+        mensaje = f"Hola {user.username}, has solicitado recuperar tu contraseña. Tu contraseña es {user.password}"
+        remitente = settings.EMAIL_HOST_USER
+        destinatarios = [user.email]
+
+        try:
+            send_mail(asunto, mensaje, remitente, destinatarios)
+            messages.success(request, "Se ha enviado un correo con instrucciones para recuperar tu contraseña.")
+        except Exception as e:
+            messages.error(request, f"No se pudo enviar el correo. Intenta de nuevo más tarde. Error: {e}")
+
+        return redirect('login')
+    return redirect('login')
 
 @login_required
 def logout_view(request):
