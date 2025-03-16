@@ -2,11 +2,13 @@ import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Categorie, Plant
 from django.core.files.storage import default_storage
 from .models import Plant, Categorie
+from Authentication.models import User 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.shortcuts import render
 
 class Vista_subir_excel(View):
     def post(self, request):
@@ -55,12 +57,17 @@ class Vista_subir_excel(View):
 
         return redirect('plantas')
 
-
 ############## CRUD PLANTAS ##############
 @login_required
 def plantas(request):
-    plants = Plant.objects.all()
+    plants_list = Plant.objects.all()
     categories = Categorie.objects.all()
+
+    # Configurar paginación
+    paginator = Paginator(plants_list, 10)  # 10 plantas por página
+    page_number = request.GET.get('page')
+    plants = paginator.get_page(page_number)
+
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories})
 
 @login_required
@@ -140,20 +147,20 @@ def buscarPlanta(request):
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories, 'query': query})
 
 #######CATALOGO PLANTAS##########
-@login_required
+#@login_required
 def catalogoPlantas(request):
     plants = Plant.objects.all()
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories})
 
-@login_required
+#@login_required
 def catalogoCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id) 
     plants = Plant.objects.filter(category_id=categoria)
     categories = Categorie.objects.all()
     return render(request, 'Catalogo/catalogoPlantas.html', {'plants': plants, 'categories': categories, 'categoria': categoria})
 
-@login_required
+#@login_required
 def catalogoBuscar(request):
     query = request.GET.get('buscarPlanta')
     plants = Plant.objects.filter(plant_name__icontains=query) if query else Plant.objects.all()
