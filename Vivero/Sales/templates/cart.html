@@ -11,7 +11,7 @@
         <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Carrito de Compras</h2>
         <hr class="border-1 opacity-75 mt-1">
 
-        {% if cart %}
+        {% if items %}
         <div class="table-responsive">
             <table class="table table-borderless table-hover rounded-3 overflow-hidden">
                 <thead class="text-white" style="background-color: #b58863;">
@@ -24,20 +24,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for key, item in cart.items %}
+                    {% for item in items %}
                     <tr>
-                        <td class="align-middle text-center">{{ item.name }}</td>
-                        <td class="align-middle text-center">${{ item.price }}</td>
+                        <td class="align-middle text-center">{{ item.plant }}</td>
+                        <td class="align-middle text-center">${{ item.plant.price }}</td>
                         <td class="align-middle text-center">
                             <div class="d-flex justify-content-center">
-                                <a href="{% url 'decrement_from_cart' item.plant_id %}" class="btn btn-sm btn-warning">-</a>
+                                <a href="{% url 'decrease_quantity' item.id %}" class="btn btn-sm" style="background-color: rgb(255,179,71);">-</a>
                                 <span class="mx-2">{{ item.quantity }}</span>
-                                <a href="{% url 'increment_from_cart' item.plant_id %}" class="btn btn-sm btn-success">+</a>
+                                <a href="{% url 'increase_quantity' item.id %}" class="btn btn-sm btn-success">+</a>
                             </div>
                         </td>
-                        <td class="align-middle text-center">${{ item.subtotal|floatformat:2 }}</td>
+                        <td class="align-middle text-center">${{ item.subtotal }}</td>
                         <td class="align-middle text-center">
-                            <a href="{% url 'remove_from_cart' item.plant_id %}" class="btn btn-danger btn-sm fw-bold shadow-sm">
+                            <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm fw-bold shadow-sm">
                                 <ion-icon name="trash-outline"></ion-icon>
                             </a>
                         </td>
@@ -49,11 +49,11 @@
         <hr class="border-1 opacity-75 mt-1">
 
         <div class="d-flex justify-content-end mt-3">
-            <h5><strong>Total: $<span id="cart-total">{{ total|floatformat:2 }}</span></strong></h5>
+            <h5><strong>Total: $<span id="cart-total">{{ total_price }}</span></strong></h5>
         </div>
 
         <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'clean_cart' %}" class="btn btn-danger shadow">Vaciar Carrito</a>
+            <a href="{% url 'catalogoPlantas' %}" class="btn shadow" style="background-color: #b58863; color: white;">Ir al Catálogo</a>
             {% if cart %}
             <form id="saleForm" action="{% url 'register_sale' %}" method="POST">
                 {% csrf_token %}
@@ -61,61 +61,59 @@
             </form>
             {% endif %}
         </div>
+        
 
         {% else %}
-        <p class="text-center">Tu carrito está vacío</p>
+        <p class="text-center">Tu carrito está vacío.</p>
         {% endif %}
 
-        <div class="mt-4 d-flex justify-content-between">
-            <a href="{% url 'catalogoPlantas' %}" class="btn shadow" style="background-color: #b58863; color: white;">Ir al Catálogo</a>
-        </div>
     </div>
 </div>
 
 <script>
-document.getElementById("saleForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    fetch(this.action, {
-        method: "POST",
-        body: new FormData(this),
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                title: "¡Todo listo!",
-                text: data.message,
-                icon: "success",
-                confirmButtonColor: "#6b8e23",
-                confirmButtonText: "OK"
-            }).then(() => {
-                window.location.href = "{% url 'cart_view' %}";
-            });
-        } else {
+    document.getElementById("saleForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+    
+        fetch(this.action, {
+            method: "POST",
+            body: new FormData(this),
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: "¡Todo listo!",
+                    text: data.message,
+                    icon: "success",
+                    confirmButtonColor: "#6b8e23",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    window.location.href = "{% url 'cart_view' %}";
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: data.message,
+                    icon: "error",
+                    confirmButtonColor: "#d33"
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
             Swal.fire({
                 title: "Error",
-                text: data.message,
+                text: "Ocurrió un error al realizar el pedido.",
                 icon: "error",
                 confirmButtonColor: "#d33"
             });
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        Swal.fire({
-            title: "Error",
-            text: "Ocurrió un error al realizar el pedido.",
-            icon: "error",
-            confirmButtonColor: "#d33"
         });
     });
-});
-</script>
-
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-{% endblock %}
+    </script>
+    
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    {% endblock %}
