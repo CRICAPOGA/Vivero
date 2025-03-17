@@ -48,7 +48,7 @@ class Vista_subir_excel(View):
             messages.success(request, 'Stock actualizado correctamente')
             return redirect('plantas')
         except Exception as e:
-            messages.error(request, f'Ocurrió un error: {str(e)}')
+            messages.error(request, 'Error: Formato de archivo no permitido. Por favor, sube un archivo de Excel (.xls o .xlsx).')
             return redirect('plantas')
 
         finally:
