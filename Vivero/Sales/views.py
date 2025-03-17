@@ -3,102 +3,118 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
-from .models import Sale, Sales_Detail
+from .models import Sale, Sales_Detail, Cart, Cart_Item
 from Inventory.models import Plant
 from Authentication.models import User
-from datetime import datetime
-from Sales.cart import Cart
 from django.utils.timezone import now
 
 #Vistas que manejan las peticiones HTTP
 
-# Vista del carrito, incluyendo plantas añadidas y el total a pagar
+############## CARRITO ##############
+
 @login_required
 def cart_view(request):
-    cart = Cart(request) # Se obtiene el carrito de la sesión
-    total = cart.get_total() 
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    items = cart.items.all()
+    # Agregar subtotales a cada ítem
+    for item in items:
+        item.subtotal = item.plant.price * item.quantity
 
-    # Agregar subtotal a cada ítem del carrito
-    for item in cart.cart.values():
-        item["subtotal"] = float(item["price"]) * item["quantity"]
+    total_price = sum(item.plant.price * item.quantity for item in items)
 
-    return render(request, "cart.html", {"cart": cart.cart, "total": total})
+    return render(request, 'cart.html', {'cart': cart, 'items': items, 'total_price': total_price})
 
-# Agrega una planta al carrito de compras (Llama función)
-@login_required(login_url='login') 
+# Agregar un producto al carrito
+@login_required
 def add_to_cart(request, plant_id):
-    plant = get_object_or_404(Plant, pk=plant_id) # Busca la planta
-    cart = Cart(request)
-    cart.add(plant)
-    return redirect("catalogoPlantas")
+    plant = get_object_or_404(Plant, plant_id=plant_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-# Incrementa la cantidad de una planta en el carrito de compras (Llama función)
-#@login_required
-def increment_from_cart(request, plant_id):
-    plant = get_object_or_404(Plant, pk=plant_id) 
-    cart = Cart(request)
-    cart.add(plant)
-    return redirect("cart_view")
+    cart_item, item_created = Cart_Item.objects.get_or_create(cart=cart, plant=plant)
+    if not item_created:
+        cart_item.quantity += 1
+        cart_item.save()
 
-# Elimina una planta del carrito de compras (Llama función)
+    return redirect('catalogoPlantas')
+
+# Incrementar la cantidad de un producto en el carrito
 @login_required
-def remove_from_cart(request, plant_id):
-    plant = Plant.objects.get(pk=plant_id)
-    cart = Cart(request)
-    cart.remove(plant)
-    return redirect("cart_view")
+def increase_quantity(request, item_id):
+    item = get_object_or_404(Cart_Item, id=item_id)
+    if item.cart.user == request.user:
+        item.quantity += 1
+        item.save()
 
-# Reduce la cantidad de una planta en el carrito de compras (Llama función)
-@login_required
-def decrement_from_cart(request, plant_id):
-    plant = Plant.objects.get(pk=plant_id)
-    cart = Cart(request)
-    cart.decrement(plant)
-    return redirect("cart_view")
+    return redirect('cart_view')
 
-# Vacía completamente el carrito de compras (Llama función)
+# Disminuir la cantidad de un producto en el carrito
 @login_required
-def clean_cart(request):
-    cart = Cart(request)
-    cart.clean()
-    return redirect("cart_view")
+def decrease_quantity(request, item_id):
+    item = get_object_or_404(Cart_Item, id=item_id)
+    if item.cart.user == request.user:
+        if item.quantity > 1:
+            item.quantity -= 1
+            item.save()
+        else:
+            item.delete()  # Elimina el item si la cantidad es 0
+
+    return redirect('cart_view')
+
+# Eliminar un producto del carrito
+@login_required
+def remove_from_cart(request, item_id):
+    item = get_object_or_404(Cart_Item, id=item_id)
+    if item.cart.user == request.user:
+        item.delete()
+
+    return redirect('cart_view')
 
 ############## PEDIDO ##############
 @login_required
 def register_sale(request):
     if request.method == "POST":
-        cart = Cart(request)  
-        if not cart.cart:
+        cart = Cart.objects.filter(user=request.user).first()  
+        if not cart or not cart.items.exists():
             return JsonResponse({"success": False, "message": "El carrito está vacío."})
 
         user = request.user  
-        total_price = cart.get_total()  
+        total_price = sum(item.plant.price * item.quantity for item in cart.items.all())
 
+        # Registrar la venta
         sale = Sale.objects.create(user_id=user, total_price=total_price, date=now())
 
-        for item in cart.cart.values():
-            plant = Plant.objects.get(pk=item["plant_id"])
+        for item in cart.items.all():
+            plant = item.plant
+            # Mensaje de stock bajo 
+            if plant.stock < item.quantity:
+                if request.user.is_staff:  # Si es un administrador
+                    mensaje = f"No hay suficiente stock de {plant.plant_name}."
+                else:  # Si es un cliente
+                    mensaje = f"Lo sentimos, la planta {plant.plant_name} no esta disponible en este momento."
 
-            if plant.stock < item["quantity"]:
-                return JsonResponse({"success": False, "message": f"No hay suficiente stock de {plant.plant_name}."})
-
+                return JsonResponse({"success": False, "message": mensaje})
+            # Datos
             Sales_Detail.objects.create(
                 sale_id=sale,
-                plant_id=plant,
-                amount=item["quantity"],
-                price=item["price"]
+                plant_id=item.plant,
+                amount=item.quantity,
+                price=item.plant.price
             )
 
-            plant.stock -= item["quantity"]
+            # Reducir el stock
+            plant.stock -= item.quantity
             plant.save()
 
-        cart.clean()  
-        # Enviar notificación al administrador
+        # Vaciar carrito después de la compra
+        cart.items.all().delete()
+
+        # Notificar al administrador
         admin_user = User.objects.filter(is_superuser=True).first()
         if admin_user:
             messages.success(request, f"Nuevo pedido realizado por {user.username}. Total: ${total_price}")
-            
+
         return JsonResponse({"success": True, "message": "¡Pedido realizado exitosamente!"})
+    
     return JsonResponse({"success": False, "message": "Método no permitido."})
 
 @login_required

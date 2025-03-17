@@ -18,7 +18,6 @@ def login_auth(request):
         user = authenticate(request, username=username, password=contraseña)
         if user is not None:
             login(request, user)  # Inicia la sesión del usuario
-            messages.success(request,'Logeado')
             return render(request, 'index.html')
         else:
             messages.error(request,'Credenciales incorrectas')

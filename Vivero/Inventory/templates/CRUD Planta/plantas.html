@@ -9,11 +9,12 @@
 <!-- Bootstrap JS (necesario para dropdowns) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3" >
-    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-9 col-md-10 col-sm-12" style="background-color:#f5f5dc;">
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 px-3">
+    <div class="card shadow-lg bg-white rounded-4 p-4 m-4 col-lg-11 col-md-10 col-sm-12"
+        style="background-color:#f5f5dc;">
         <h2 class="text-center fw-bold mt-2 mb-4" style="color: #b58863;">Gestión de Inventario</h2>
         <hr class="border-1 opacity-75 mt-1">
-        
+
         <!-- Notificaciones -->
         {% if messages %}
         {% for message in messages %}
@@ -23,28 +24,25 @@
         </div>
         {% endfor %}
         {% endif %}
-        
+
         <!-- Filtros -->
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <div class="row mb-3 align-items-center">
             <div class="col-md-6">
                 <form method="GET" action="{% url 'buscarPlanta' %}">
-                    <input type="text" class="form-control" style="border-color: rgb(255,179,71);"  name="buscarPlanta"
+                    <input type="text" class="form-control" style="border-color: rgb(255,179,71);" name="buscarPlanta"
                         placeholder="Buscar plantas..." value="{{ query|default:'' }}">
                 </form>
             </div>
-            
-            <div class="col-md-4">
+
+            <div class="col-md-4 mt-2">
                 <div class="dropdown w-100">
-                    <button type="button" class="btn dropdown-toggle w-100 text-start" 
-                            style="background-color: rgb(255,179,71);" 
-                            data-bs-toggle="dropdown"
-                            data-bs-auto-close="true" 
-                            aria-expanded="false" 
-                            id="categoryDropdown">
+                    <button type="button" class="btn dropdown-toggle w-100 text-start"
+                        style="background-color: rgb(255,179,71);" data-bs-toggle="dropdown" aria-expanded="false"
+                        id="categoryDropdown">
                         {% if categoria %}
-                            {{ categoria.category }}
+                        {{ categoria.category }}
                         {% else %}
-                            Selecciona una categoría
+                        Selecciona una categoría
                         {% endif %}
                     </button>
                     <ul class="dropdown-menu w-100">
@@ -60,22 +58,36 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </div>            
+            </div>
 
-            <!-- Botón para abrir el popup -->
-            <div class="text-end me-3">
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                    Subir Archivo
-                </button>
+            <div class="d-flex justify-content-between align-items-center me-2 mt-2">
+                <!-- Botón Agregar (Izquierda) -->
+                <div class="col-md-2 text-start">
+                    <a href="{% url 'crearPlanta' %}" class="btn shadow align-items-center justify-content-center"
+                        style="background-color: rgb(107, 142, 35); color: white;"> 
+                        <ion-icon name="add-sharp"></ion-icon> Agregar 
+                    </a>
+                </div>
+            
+                <!-- Botón Popup: Subir Archivo (Derecha) -->
+                <div class="text-end">
+                    <button type="button" class="btn shadow align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#uploadModal"
+                        style="background-color: rgb(107, 142, 35); color: white;">
+                        <ion-icon name="arrow-up-sharp"></ion-icon> Subir Archivo
+                    </button>
+                </div>
             </div>
             
+
             <!-- Modal -->
-            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="uploadModalLabel">Subir Archivo</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
                             <form action="{% url 'subir_excel' %}" method="post" enctype="multipart/form-data">
@@ -89,46 +101,80 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="col-md-2 text-end">
-                <a href="{% url 'crearPlanta' %}" class="btn fw-bold shadow" style="background-color: rgb(255,179,71);"> Agregar </a>
-            </div>
         </div>
+        <hr class="border-1 opacity-75 mt-1 mb-3">
 
         <!-- Tabla de Plantas -->
-        <div class="table-responsive" style="background-color:#f5f5dc;">
-            <table class="table table-bordered table-hover rounded-3 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover rounded-3 overflow-hidden">
                 <thead class="text-white" style="background-color: rgb(107, 142, 35);">
                     <tr>
-                        <th class="text-center">Categoria</th>
-                        <th class="text-center">Nombre</th>
-                        <th class="text-center">Recomendaciones de cuidados</th>
-                        <th class="text-center">Precio</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Acciones</th>
+                        <th class="align-middle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Id</th>
+                        <th class="align-middle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Categoria</th>
+                        <th class="align-middle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Nombre</th>
+                        <th class="align-middle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Recomendaciones de cuidados</th>
+                        <th class="align-middle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Precio</th>
+                        <th class="align-middle text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Cantidad</th>
+                        <th class="text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; background-color: rgb(107, 142, 35); color: white;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for planta in plants %}
-                        <tr>
-                            <td class="align-middle">{{ planta.category_id}}</td>
-                            <td class="align-middle">{{ planta.plant_name}}</td>
-                            <td class="align-middle">{{ planta.care }}</td>
-                            <td class="align-middle">${{ planta.price }}</td>
-                            <td class="align-middle">{{ planta.stock }}</td>
-                            <td class="text-center align-middle">
-                                <a href="{% url 'editarPlanta' planta.plant_id %}" class="btn btn-sm fw-bold shadow-sm mb-3" style="background-color: #b58863; color: white;">Editar</a>
-                                <a href="{% url 'eliminarPlanta' planta.plant_id %}" class="btn btn-sm fw-bold shadow-sm" style="background-color: #b58863; color: white;">Eliminar</a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="align-middle">{{ planta.plant_id}}</td>
+                        <td class="align-middle">{{ planta.category_id}}</td>
+                        <td class="align-middle">{{ planta.plant_name}}</td>
+                        <td class="align-middle">{{ planta.care }}</td>
+                        <td class="align-middle">${{ planta.price }}</td>
+                        <td class="align-middle text-center">{{ planta.stock }}</td>
+                        <td class="text-center align-middle">
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
+                                <a href="{% url 'editarPlanta' planta.plant_id %}" class="btn btn-sm shadow-sm"
+                                    style="background-color: #b58863; color: white;">Editar</a>
+                                <a href="{% url 'eliminarPlanta' planta.plant_id %}" class="btn btn-sm shadow-sm"
+                                    style="background-color: #b58863; color: white;">Eliminar</a>
+                            </div>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <!-- Paginación -->
+        <div class="d-flex justify-content-center mt-3">
+            <nav>
+                <ul class="pagination">
+                    {% if plants.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" style="background-color: #b58863; color: white;">&laquo;
+                            Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ plants.previous_page_number }}"
+                            style="background-color: #b58863; color: white;">Anterior</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Página {{ plants.number }} de {{ plants.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if plants.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ plants.next_page_number }}"
+                            style="background-color: #b58863; color: white;">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ plants.paginator.num_pages }}"
+                            style="background-color: #b58863; color: white;">Última &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
     </div>
 </div>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -151,6 +197,6 @@
         });
     });
 </script>
-
-{% endblock%}
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+{%endblock%}
 
