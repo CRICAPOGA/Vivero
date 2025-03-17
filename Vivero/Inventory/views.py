@@ -4,9 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.files.storage import default_storage
 from .models import Plant, Categorie
-from Authentication.models import User 
+from Authentication.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
@@ -58,6 +59,7 @@ class Vista_subir_excel(View):
         return redirect('plantas')
 
 ############## CRUD PLANTAS ##############
+@staff_member_required(login_url='/')
 @login_required
 def plantas(request):
     plants_list = Plant.objects.all()
@@ -70,6 +72,7 @@ def plantas(request):
 
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories})
 
+@staff_member_required(login_url='/')
 @login_required
 def plantasPorCategoria(request, categoria_id):
     categoria = get_object_or_404(Categorie, category_id=categoria_id)
@@ -77,6 +80,7 @@ def plantasPorCategoria(request, categoria_id):
     categories = Categorie.objects.all()
     return render(request, 'CRUD Planta/plantas.html', {'categories': categories, 'plants': plants, 'categoria': categoria})
 
+@staff_member_required(login_url='/')
 @login_required
 def editarPlanta(request, planta_id):
     plants = get_object_or_404(Plant, plant_id=planta_id)
@@ -99,6 +103,7 @@ def editarPlanta(request, planta_id):
     
     return render(request, 'CRUD Planta/editarPlanta.html', {'plants': plants, 'categories': categories})
 
+@staff_member_required(login_url='/')
 @login_required
 def crearPlanta(request):
     categories = Categorie.objects.all()
@@ -130,6 +135,7 @@ def crearPlanta(request):
     
     return render(request, 'CRUD Planta/crearPlanta.html', {'categories': categories})
 
+@staff_member_required(login_url='/')
 @login_required
 def eliminarPlanta(request, planta_id):
     plants = get_object_or_404(Plant, plant_id=planta_id)
@@ -139,6 +145,7 @@ def eliminarPlanta(request, planta_id):
         return redirect('plantas')
     return render(request, 'CRUD Planta/eliminarPlanta.html', {'plants': plants})
 
+@staff_member_required(login_url='/')
 @login_required
 def buscarPlanta(request):
     query = request.GET.get('buscarPlanta', '').strip()

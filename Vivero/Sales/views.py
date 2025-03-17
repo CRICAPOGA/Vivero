@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .models import Sale, Sales_Detail, Cart, Cart_Item
 from Inventory.models import Plant
@@ -117,6 +118,7 @@ def register_sale(request):
     
     return JsonResponse({"success": False, "message": "Método no permitido."})
 
+@staff_member_required(login_url='/')
 @login_required
 def sales_history(request):
     sales = Sale.objects.all().order_by("-date")  # Obtener todas las ventas ordenadas por fecha descendente

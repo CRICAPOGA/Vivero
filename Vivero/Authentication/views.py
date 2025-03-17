@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from .models import User, Role
 from django.core.mail import send_mail
@@ -83,11 +84,13 @@ def register_view(request):
     return render(request, 'register.html', {'roles': roles})
 
 ############## CRUD USUARIOS #################
+@staff_member_required(login_url='/')
 @login_required
 def lista_usuarios(request):
     usuarios = User.objects.all()
     return render(request, 'CRUD usuarios/usuarios.html', {'usuarios': usuarios})
 
+@staff_member_required(login_url='/')
 @login_required
 def crear_usuario(request):
     roles = Role.objects.all()
@@ -113,6 +116,7 @@ def crear_usuario(request):
     
     return render(request, "CRUD usuarios/crear_usuario.html", {"roles": roles})
 
+@staff_member_required(login_url='/')
 @login_required
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(User, pk=usuario_id)
@@ -135,6 +139,7 @@ def editar_usuario(request, usuario_id):
     
     return render(request, "CRUD usuarios/editar_usuario.html", {"usuario": usuario, "roles": roles})
 
+@staff_member_required(login_url='/')
 @login_required
 def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(User, pk=usuario_id)
