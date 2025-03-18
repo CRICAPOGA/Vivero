@@ -11,10 +11,16 @@ from django.utils.timezone import now
 
 #Vistas que manejan las peticiones HTTP
 
+def redirect_if_admin(user):
+    if user.is_staff or user.is_superuser:
+        return redirect('home')
+
 ############## CARRITO ##############
 
 @login_required
 def cart_view(request):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     cart, created = Cart.objects.get_or_create(user=request.user)
     items = cart.items.all()
     # Agregar subtotales a cada ítem
@@ -28,6 +34,8 @@ def cart_view(request):
 # Agregar un producto al carrito
 @login_required
 def add_to_cart(request, plant_id):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     plant = get_object_or_404(Plant, plant_id=plant_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -41,6 +49,8 @@ def add_to_cart(request, plant_id):
 # Incrementar la cantidad de un producto en el carrito
 @login_required
 def increase_quantity(request, item_id):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     item = get_object_or_404(Cart_Item, id=item_id)
     if item.cart.user == request.user:
         item.quantity += 1
@@ -51,6 +61,8 @@ def increase_quantity(request, item_id):
 # Disminuir la cantidad de un producto en el carrito
 @login_required
 def decrease_quantity(request, item_id):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     item = get_object_or_404(Cart_Item, id=item_id)
     if item.cart.user == request.user:
         if item.quantity > 1:
@@ -64,6 +76,8 @@ def decrease_quantity(request, item_id):
 # Eliminar un producto del carrito
 @login_required
 def remove_from_cart(request, item_id):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     item = get_object_or_404(Cart_Item, id=item_id)
     if item.cart.user == request.user:
         item.delete()
@@ -73,6 +87,8 @@ def remove_from_cart(request, item_id):
 ############## PEDIDO ##############
 @login_required
 def register_sale(request):
+    if redirect_if_admin(request.user):
+        return redirect_if_admin(request.user)
     if request.method == "POST":
         cart = Cart.objects.filter(user=request.user).first()  
         if not cart or not cart.items.exists():
