@@ -70,6 +70,7 @@ def plantas(request):
     page_number = request.GET.get('page')
     plants = paginator.get_page(page_number)
 
+    verificar_stock(request)
     return render(request, 'CRUD Planta/plantas.html', {'plants': plants, 'categories': categories})
 
 @staff_member_required(login_url='/')

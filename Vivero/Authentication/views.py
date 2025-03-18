@@ -4,9 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
+
+from Inventory.models import Plant
 from .models import User, Role
-from django.core.mail import send_mail
-from django.conf import settings
 
 # Create your views here.
 def login_view(request):
@@ -19,6 +19,15 @@ def login_auth(request):
         user = authenticate(request, username=username, password=contraseña)
         if user is not None:
             login(request, user)  # Inicia la sesión del usuario
+            if request.user.is_authenticated and request.user.is_staff:
+                low_stock_plants = Plant.objects.filter(stock__lt=5)  # Plantas con stock bajo
+                total_plants = Plant.objects.count()
+                total_users = User.objects.count()
+                return render(request, 'index.html', {
+                    'low_stock_plants': low_stock_plants,
+                    'total_plants': total_plants,
+                    'total_users': total_users
+                })
             return render(request, 'index.html')
         else:
             messages.error(request,'Credenciales incorrectas')

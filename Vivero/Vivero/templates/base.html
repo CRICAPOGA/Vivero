@@ -156,6 +156,11 @@
         <ul class="list-group mt-3">
             {% if user.is_staff %}
             <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
+                <a href="{% url 'home' %}" class="btn w-100 text-white" style="background-color: rgb(85, 120, 25); border: none;">
+                    <ion-icon name="home-outline"></ion-icon> Home
+                </a>
+            </li>
+            <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
                 <a href="{% url 'lista_usuarios' %}" class="btn w-100 text-white" style="background-color: rgb(85, 120, 25); border: none;">Usuarios</a>
             </li>
             <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
@@ -187,6 +192,11 @@
             <hr>
             <ul class="list-group">
                 {% if user.is_staff %}
+                <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
+                    <a href="{% url 'home' %}" class="btn w-100 text-white" style="background-color: rgb(85, 120, 25); border: none;">
+                        <ion-icon name="home-outline"></ion-icon> Home
+                    </a>
+                </li>
                 <li class="list-group-item" style="background-color: rgb(107, 142, 35); border: none;">
                     <a href="{% url 'lista_usuarios' %}" class="btn w-100 text-white" style="background-color: rgb(85, 120, 25); border: none;">Usuarios</a>
                 </li>
