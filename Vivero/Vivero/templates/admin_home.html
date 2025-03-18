@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Bienvenido, Administrador</h1>
+    <p>Aquí puedes ver el estado del inventario.</p>
+
+    {% if productos_stock_bajo %}
+        <div class="alert alert-warning">
+            <h4>Productos con Stock Bajo</h4>
+            <ul>
+                {% for plant in productos_stock_bajo %}
+                    <li>{{ plant.plant_name }} - Stock: {{ plant.stock }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="alert alert-success">Todo el stock está en niveles óptimos.</div>
+    {% endif %}
+</div>
+{% endblock %}
